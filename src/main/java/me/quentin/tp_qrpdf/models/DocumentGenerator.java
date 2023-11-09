@@ -1,29 +1,25 @@
 package me.quentin.tp_qrpdf.models;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-
 import javax.imageio.ImageIO;
-
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType0Font;
-import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageConfig;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.qrcode.QRCodeWriter;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.PdfWriter;
 
 public class DocumentGenerator {
-	final PDRectangle PAGE_RECTANGLE = PDRectangle.A6;
-	final int FONT_WIDTH = 24;
-	final int IMAGE_SIZE = 256;
-	final PDRectangle IMAGE_RECTANGLE = new PDRectangle(192, 192);
+	private final int IMAGE_SIZE = 512;
 
 	private QRCodeWriter qrWriter;
 
@@ -31,29 +27,25 @@ public class DocumentGenerator {
 		this.qrWriter = writer;
 	}
 
-	public PDDocument generateDocument(String inputText) throws WriterException, IOException {
+	public File generateDocument(String inputText) throws Exception {
+		var document = new Document();
+		var outputFile = File.createTempFile("tp_qrpdf", "pdfile");
+		var qrCodeBytes = this.getQrCodeBytes(inputText);
+		PdfWriter.getInstance(document, new FileOutputStream(outputFile));
+		document.open();
 
-		var portableDocument = new PDDocument();
-		var pdPage = new PDPage(PAGE_RECTANGLE);
-		portableDocument.addPage(pdPage);
-		var pageContents = new PDPageContentStream(portableDocument, pdPage);
+		var paragraph = new Paragraph();
+		paragraph.add(new Phrase(inputText));
+		paragraph.setAlignment(Element.ALIGN_CENTER);
+		document.add(paragraph);
 
-		// Writes source inputText to pd
-		final var textMiddle = (inputText.length() * FONT_WIDTH) / 2 + ((inputText.length() * FONT_WIDTH) / 4);
-		pageContents.beginText();
-		pageContents.newLineAtOffset(textMiddle, PAGE_RECTANGLE.getHeight() - (PAGE_RECTANGLE.getHeight() / 4));
-		pageContents.setFont(this.helvetica(portableDocument), 24);
-		pageContents.showText(inputText);
-		pageContents.endText();
+		var image = Image.getInstance(qrCodeBytes);
+		image.setAlignment(Element.ALIGN_CENTER);
+		document.add(image);
 
-		// Draws rendered QR code to pd
-		final var imageBytes = this.getQrCodeBytes(inputText);
-		var image = PDImageXObject.createFromByteArray(portableDocument, imageBytes, inputText);
-		var imageMiddle = (IMAGE_RECTANGLE.getWidth() / 2);
-		pageContents.drawImage(image, PAGE_RECTANGLE.getHeight() + imageMiddle, 0);
-		pageContents.close();
+		document.close();
 
-		return portableDocument;
+		return outputFile;
 	}
 
 	/**
@@ -72,9 +64,5 @@ public class DocumentGenerator {
 		var baos = new ByteArrayOutputStream();
 		ImageIO.write(qrCodeImage, "png", baos);
 		return baos.toByteArray();
-	}
-
-	private PDFont helvetica(PDDocument document) throws IOException {
-		return PDType0Font.load(document, getClass().getClassLoader().getResourceAsStream("helvetica.ttf"));
 	}
 }
