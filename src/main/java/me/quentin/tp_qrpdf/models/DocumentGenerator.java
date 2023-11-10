@@ -19,7 +19,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class DocumentGenerator {
-	private final int IMAGE_SIZE = 512;
+	private final int IMAGE_SIZE = 256;
 
 	private QRCodeWriter qrWriter;
 
@@ -29,7 +29,7 @@ public class DocumentGenerator {
 
 	public File generateDocument(String inputText) throws Exception {
 		var document = new Document();
-		var outputFile = File.createTempFile("tp_qrpdf", "pdfile");
+		var outputFile = File.createTempFile("qrpdf", "pdfile");
 		var qrCodeBytes = this.getQrCodeBytes(inputText);
 		PdfWriter.getInstance(document, new FileOutputStream(outputFile));
 		document.open();
