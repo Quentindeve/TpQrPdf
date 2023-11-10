@@ -4,11 +4,9 @@ import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
-import java.io.IOException;
 
 import javax.swing.JOptionPane;
 
-import com.google.zxing.WriterException;
 import com.google.zxing.qrcode.QRCodeWriter;
 
 import me.quentin.tp_qrpdf.models.DocumentGenerator;
@@ -37,11 +35,9 @@ public class Controller {
 			public void mouseClicked(MouseEvent e) {
 				var text = view.getText();
 				try {
-					var document = documentGenerator.generateDocument(text);
-					var tempFile = File.createTempFile("temp-pdf", "pdf");
-					document.save(tempFile);
-					Desktop.getDesktop().open(tempFile);
-				} catch (WriterException | IOException | IllegalArgumentException exception) {
+					File output = documentGenerator.generateDocument(text);
+					Desktop.getDesktop().open(output);
+				} catch (Exception exception) {
 					JOptionPane.showMessageDialog(null, "Error: cannot generate PDF: " + exception.getMessage(),
 							"Error", 0);
 				}
