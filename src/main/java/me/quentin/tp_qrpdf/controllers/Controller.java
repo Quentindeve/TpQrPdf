@@ -27,7 +27,7 @@ public class Controller {
 			this.documentGenerator = new DocumentGenerator();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Error: cannot instantiate Document Generator: " + e.getMessage(),
-					"Error", 0);
+					"Error", JOptionPane.ERROR_MESSAGE);
 		}
 		this.view.setVisible(true);
 		this.view.setButtonEventListener(new MouseAdapter() {
@@ -39,7 +39,7 @@ public class Controller {
 					Desktop.getDesktop().open(output);
 				} catch (Exception exception) {
 					JOptionPane.showMessageDialog(null, "Error: cannot generate PDF: " + exception.getMessage(),
-							"Error", 0);
+							"Error", JOptionPane.ERROR_MESSAGE);
 				}
 			}
 		});
