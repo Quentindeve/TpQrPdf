@@ -24,7 +24,7 @@ public class Controller {
 		this.view = new MainView();
 
 		try {
-			this.documentGenerator = new DocumentGenerator(new QRCodeWriter());
+			this.documentGenerator = new DocumentGenerator();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Error: cannot instantiate Document Generator: " + e.getMessage(),
 					"Error", 0);
