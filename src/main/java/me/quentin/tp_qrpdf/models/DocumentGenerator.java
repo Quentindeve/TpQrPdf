@@ -23,6 +23,8 @@ public class DocumentGenerator {
 
 	private QRCodeWriter qrWriter;
 
+	public DocumentGenerator() throws WriterException {
+		this.qrWriter = new QRCodeWriter();
 	public DocumentGenerator(QRCodeWriter writer) throws WriterException {
 		this.qrWriter = writer;
 	}
@@ -56,7 +58,7 @@ public class DocumentGenerator {
 	 * @throws IOException     If we cannot draw it.
 	 * @throws WriterException If we cannot draw it.
 	 */
-	private byte[] getQrCodeBytes(String inputText) throws IOException, WriterException {
+	public byte[] getQrCodeBytes(String inputText) throws IOException, WriterException {
 		final var qrCodeMatrix = qrWriter.encode(inputText, BarcodeFormat.QR_CODE, IMAGE_SIZE, IMAGE_SIZE);
 		final var imageConfig = new MatrixToImageConfig(0xff00dcdf, 0xff000008);
 		final var qrCodeImage = MatrixToImageWriter.toBufferedImage(qrCodeMatrix, imageConfig);
