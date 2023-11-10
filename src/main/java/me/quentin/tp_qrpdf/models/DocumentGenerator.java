@@ -25,8 +25,6 @@ public class DocumentGenerator {
 
 	public DocumentGenerator() throws WriterException {
 		this.qrWriter = new QRCodeWriter();
-	public DocumentGenerator(QRCodeWriter writer) throws WriterException {
-		this.qrWriter = writer;
 	}
 
 	public File generateDocument(String inputText) throws Exception {
