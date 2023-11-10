@@ -19,7 +19,7 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfWriter;
 
 public class DocumentGenerator {
-	private final int IMAGE_SIZE = 256;
+	public static final int IMAGE_SIZE = 256;
 
 	private QRCodeWriter qrWriter;
 
