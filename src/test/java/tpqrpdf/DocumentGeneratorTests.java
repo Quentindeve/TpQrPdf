@@ -21,7 +21,7 @@ public class DocumentGeneratorTests {
      */
     @Test
     public void testDocumentGeneratorOutputsQrCodeInPngFormat() throws Exception {
-        var documentGenerator = newDocumentGenerator();
+        var documentGenerator = new DocumentGenerator();
         var qrCode = documentGenerator.getQrCodeBytes("Test");
         var expectedPngSignature = new byte[]{(byte) 0x89, (byte) 0x50, (byte) 0x4e, (byte) 0x47};
 
@@ -35,18 +35,15 @@ public class DocumentGeneratorTests {
      */
     @Test
     public void testDocumentGeneratorOutputsPdf() throws Exception {
-        var documentGenerator = newDocumentGenerator();
+        var documentGenerator = new DocumentGenerator();
         var pdf = documentGenerator.generateDocument("Test");
         var expectedPdfSignature = new byte[]{(byte) 0x25, (byte) 0x50, (byte) 0x44, (byte) 0x46};
-
         var pdfSignature = new byte[expectedPdfSignature.length];
         var pdfInputStream = new FileInputStream(pdf);
+
         pdfInputStream.read(pdfSignature);
         pdfInputStream.close();
-        assertTrue(Arrays.equals(expectedPdfSignature, pdfSignature));
-    }
 
-    private DocumentGenerator newDocumentGenerator() throws WriterException {
-        return new DocumentGenerator();
+        assertTrue(Arrays.equals(expectedPdfSignature, pdfSignature));
     }
 }
