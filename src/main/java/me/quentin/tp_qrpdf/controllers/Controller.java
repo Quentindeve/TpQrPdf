@@ -21,25 +21,30 @@ public class Controller {
 	private DocumentGenerator documentGenerator;
 
 	public Controller() {
+		// creates the view
 		this.view = new MainView();
-
 		try {
+			// instanciates the document generator
 			this.documentGenerator = new DocumentGenerator();
 		} catch (Exception e) {
 			JOptionPane.showMessageDialog(null, "Error: cannot instantiate Document Generator: " + e.getMessage(),
 					"Error", JOptionPane.ERROR_MESSAGE);
 		}
+
 		this.view.setVisible(true);
+		// when the user clicks on the button of the view to generate the PDF
 		this.view.setButtonEventListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				var text = view.getText();
 				try {
-					File output = documentGenerator.generateDocument(text);
+					var generationConfig = view.getGenerationConfig();
+					File output = documentGenerator.generateDocument(text, generationConfig);
 					Desktop.getDesktop().open(output);
 				} catch (Exception exception) {
 					JOptionPane.showMessageDialog(null, "Error: cannot generate PDF: " + exception.getMessage(),
 							"Error", JOptionPane.ERROR_MESSAGE);
+					exception.printStackTrace();
 				}
 			}
 		});
